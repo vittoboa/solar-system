@@ -6,6 +6,14 @@ static GLsizei window_width = 1280, window_height = 720;
 
 void init(void)
 {
+    // global ambient light
+    const float globAmb[] = {0.1, 0.1, 0.1, 1.0};
+
+    // light property vectors
+    const float lightAmb[]  = {0.2, 0.2, 0.2, 1.0};
+    const float lightDif[]  = {1.0, 1.0, 1.0, 1.0};
+    const float lightSpec[] = {0.1, 0.1, 0.1, 0.5};
+
     // select clearing color
     glClearColor(0.1, 0.1, 0.1, 0.0);
 
@@ -22,6 +30,23 @@ void init(void)
 
     // initialize model view transforms
     glMatrixMode(GL_MODELVIEW);
+
+    // turn on OpenGL lighting
+    glEnable(GL_LIGHTING);
+
+    // set light properties
+    glLightfv(GL_LIGHT0, GL_AMBIENT,  lightAmb);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE,  lightDif);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpec);
+
+    // global ambient light
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globAmb);
+
+    // enable local viewpoint
+    glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+
+    // set shading model
+    glShadeModel(GL_SMOOTH);
 }
 
 // OpenGL window resize routine

@@ -4,6 +4,28 @@
 // OpenGL global variables
 static GLsizei window_width = 1280, window_height = 720;
 
+// globals
+static const GLfloat planets_z = -30.0;  // planets position on z axis
+static const GLfloat light_pos[] = {0.0, 0.0, planets_z, 1.0};  // light coordinates
+
+// display routine
+void display(void)
+{
+    // position light
+    glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
+
+    // clear color and depth buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // turn on light
+    glEnable(GL_LIGHT0);
+
+    // swap buffer
+    glutSwapBuffers();
+
+    glutPostRedisplay();
+}
+
 void init(void)
 {
     // global ambient light
@@ -73,6 +95,7 @@ int main(int argc, char **argv)
     glewInit();
 
     init();
+    glutDisplayFunc(display);
     glutMainLoop();
 
     return 0;

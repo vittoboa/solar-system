@@ -16,6 +16,7 @@ static GLsizei window_width = 1280, window_height = 720;
 static const GLfloat planets_z = -30.0;  // planets position on z axis
 static const GLfloat light_pos[] = {0.0, 0.0, planets_z, 1.0};  // light coordinates
 static const int planets_num = 8;  // number of planets in the solar system
+static const int days_speed = 1;  // how many days are added at each iteration
 static Planet planets[] = {  // array to hold all planets
     { .name = "Mercury", .x = 1.0,  .n_stacks = 10, .n_slices = 10, .current_day = 1, .days_in_year = 88,    .name_len = 7, .radius = 0.02439, .amb = {0.50, 0.40, 0.30, 1.0}, .diff = {1.0, 0.9, 0.8, 1.0}, .spec = {0.25, 0.20, 0.15, 1.0}, .shine = {20.0}},
     { .name = "Venus",   .x = 2.0,  .n_stacks = 10, .n_slices = 10, .current_day = 1, .days_in_year = 225,   .name_len = 5, .radius = 0.06052, .amb = {0.50, 0.35, 0.20, 1.0}, .diff = {1.0, 0.7, 0.4, 1.0}, .spec = {0.25, 0.15, 0.10, 1.0}, .shine = {20.0}},
@@ -61,6 +62,16 @@ void display(void)
         glTranslatef(planets[i].x, 0.0, 0.0);
         // draw planet
         glutSolidSphere(planets[i].radius, planets[i].n_slices, planets[i].n_stacks);
+
+        /* Update days */
+        // check if the year is not over
+        if (planets[i].current_day < planets[i].days_in_year) {
+            // set to next day
+            planets[i].current_day += days_speed;
+        } else {
+            // reset to first day
+            planets[i].current_day = 1;
+        }
     }
 
     // pop initial state from the stack

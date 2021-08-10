@@ -76,14 +76,6 @@ void display(void)
 
 void init(void)
 {
-    // global ambient light
-    const float globAmb[] = {0.1, 0.1, 0.1, 1.0};
-
-    // light property vectors
-    const float lightAmb[]  = {0.2, 0.2, 0.2, 1.0};
-    const float lightDif[]  = {1.0, 1.0, 1.0, 1.0};
-    const float lightSpec[] = {0.1, 0.1, 0.1, 0.5};
-
     // select clearing color
     glClearColor(0.1, 0.1, 0.1, 0.0);
 
@@ -95,7 +87,7 @@ void init(void)
 
     // set projection
     glMatrixMode(GL_PROJECTION);
-    const float ratio = (float) window_width / (float) window_height, scale = 1.2;
+    const GLdouble ratio = (GLdouble) window_width / window_height, scale = 1.2;
     glFrustum(-(ratio * scale), ratio * scale, - scale, scale, 5.0, 60.0);
 
     // initialize model view transforms
@@ -105,11 +97,15 @@ void init(void)
     glEnable(GL_LIGHTING);
 
     // set light properties
+    const GLfloat lightAmb[]  = {0.2, 0.2, 0.2, 1.0};
+    const GLfloat lightDif[]  = {1.0, 1.0, 1.0, 1.0};
+    const GLfloat lightSpec[] = {0.1, 0.1, 0.1, 0.5};
     glLightfv(GL_LIGHT0, GL_AMBIENT,  lightAmb);
     glLightfv(GL_LIGHT0, GL_DIFFUSE,  lightDif);
     glLightfv(GL_LIGHT0, GL_SPECULAR, lightSpec);
 
-    // global ambient light
+    // set global ambient light
+    const GLfloat globAmb[] = {0.1, 0.1, 0.1, 1.0};
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globAmb);
 
     // enable local viewpoint

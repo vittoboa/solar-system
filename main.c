@@ -33,7 +33,19 @@ static const Light lights[] = {
         .diff = {1.0, 0.8, 0.5, 1.0},
         .spec = {1.0, 0.6, 0.1, 1.0},
         .pos  = {0.0, 0.0, planets_z, 1.0}
+    }, {  // universe light
+        .amb  = {0.0, 0.0, 0.0, 1.0},
+        .diff = {1.0, 1.0, 0.6, 1.0},
+        .spec = {1.0, 1.0, 0.4, 1.0},
+        .pos  = {0.0, 0.0, 0.0, 1.0}
     }
+};
+static const Material sun = {
+    .amb   = {0.2, 0.1, 0.0, 1.0},
+    .diff  = {1.0, 0.5, 0.0, 1.0},
+    .spec  = {1.0, 0.5, 0.0, 1.0},
+    .emit  = {1.0, 0.3, 0.0, 1.0},
+    .shine = {4.0}
 };
 
 // display routine
@@ -48,6 +60,27 @@ void display(void)
 
     // push initial state on the stack
     glPushMatrix();
+
+    /* Draw Sun */
+    // save current lighting attributes to not mix them with the universe light, which is only used to illuminate the Sun
+    glPushAttrib(GL_LIGHTING_BIT);
+    // add the universe light, a directional light point to illuminate the Sun
+    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, lights[1].pos);
+    glEnable(GL_LIGHT1);
+    // set material properties of the planet
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION,  sun.emit);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,   sun.amb);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,   sun.diff);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR,  sun.spec);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, sun.shine);
+    // place in the scene
+    glTranslatef(0.0, 0.0, planets_z);
+    // draw planet
+    glutSolidSphere(1.5, 250, 25);
+    // disable the directional light for the Sun
+    glDisable(GL_LIGHT1);
+    // reset lighting to revert changes made for the Sun
+    glPopAttrib();
 
     static Planet planets[] = {  // array to hold all planets
         { .name = "Mercury", .x = 2.0,  .n_stacks = 10, .n_slices = 10, .current_day = 1, .days_in_year = 88,    .radius = 0.02439, .material = { .amb = {0.50, 0.40, 0.30, 1.0}, .diff = {1.0, 0.9, 0.8, 1.0}, .spec = {0.25, 0.20, 0.15, 1.0}, .shine = {20.0} } },
@@ -128,6 +161,11 @@ void init(void)
     glLightfv(GL_LIGHT0, GL_AMBIENT,  lights[0].amb);
     glLightfv(GL_LIGHT0, GL_DIFFUSE,  lights[0].diff);
     glLightfv(GL_LIGHT0, GL_SPECULAR, lights[0].spec);
+
+    // set universe light properties
+    glLightfv(GL_LIGHT1, GL_AMBIENT,  lights[1].amb);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE,  lights[1].diff);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, lights[1].spec);
 
     // set global ambient light
     const GLfloat globAmb[] = {0.1, 0.1, 0.1, 1.0};

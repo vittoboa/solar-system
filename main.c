@@ -175,19 +175,25 @@ static GLuint loadTexture(const char *filename, const int tex_i)
     // open file
     FILE *file = fopen(filename, "rb");
     if (file == NULL) {
-        return 0;
+        printf("Failed to open texture file.\n");
     }
 
     // read image width and height
     int width, height;
     fseek(file, 18, SEEK_SET);
-    fread((GLubyte *)&width,  4, 1, file);
-    fread((GLubyte *)&height, 4, 1, file);
+    if (!fread((GLubyte *)&width,  4, 1, file)) {
+        printf("Failed to read texture file.\n");
+    }
+    if (!fread((GLubyte *)&height, 4, 1, file)) {
+        printf("Failed to read texture file.\n");
+    }
 
     // read bmp file image data
     unsigned char *data = (unsigned char *)malloc(width * height * 3);
     fseek(file, 0, SEEK_SET);
-    fread(data, width * height * 3, 1, file);
+    if (!fread(data, width * height * 3, 1, file)) {
+        printf("Failed to read texture file.\n");
+    }
     fclose(file);
 
     // reverse color values from BGR (bmp storage format) to RGB
